@@ -3,5 +3,5 @@ Discord Webhook library - VERY Simple lib for sending webhooks from your codebas
 
 
 ```rust
-    let result: Result<(),E> = send_discord("webhook_url", "Hello World", "Lazarus").await
+    let result: Result<(), reqwest::Error> = send_discord("webhook_url", "Hello World", "Lazarus").await
 ```
