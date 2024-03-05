@@ -1,7 +1,13 @@
 [package]
 name = "rust-discord-lib"
-version = "0.1.0"
+description = "Discord Webhook library - for sending webhooks from your codebase, without fuss"
+version = "0.1.2"
 edition = "2021"
+authors = ["james@koonts.net"]
+license = "MIT"
+repository = "https://github.com/helloimalemur/discord-webhook-lib"
+keywords = ["discord", "webhook", "lib", "discord-webhook-lib"]
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -5,28 +5,22 @@ use std::process;
 use reqwest::header::{CONTENT_TYPE};
 
 
-pub async fn send_discord(discord: String, message: String, username: String) {
-    let message = format!("{}", message);
-    if discord.contains("https://discord.com/api/webhooks/") {
-        send(discord.as_str(), username.as_str(), message).await;
+pub async fn send_discord(webhook_url: &str, message: &str, username: &str) -> std::result::Result<(), reqwest::Error> {
+    if webhook_url.contains("https://discord.com/api/webhooks/") {
+
+        let json_message = match jsonify(username, message) {
+            Ok(j) => j,
+            Err(_e) => process::exit(3)
+        };
+        push_message(webhook_url, json_message).await?;
     } else {
         println!("invalid discord url");
     }
-
-}
-
-pub async fn send(api_url: &str, username: &str, message: String) {
-
-    let json_message = match jsonify(username, message) {
-        Ok(j) => j,
-        Err(_e) => process::exit(3)
-    };
-    push_message(api_url, json_message).await;
-
+    Ok(())
 }
 
 
-async fn push_message(api_url: &str, json_message: Value) {
+async fn push_message(api_url: &str, json_message: Value) -> reqwest::Result<String> {
     let client = ClientBuilder::new()
         .danger_accept_invalid_certs(true)
         .no_gzip()
@@ -40,23 +34,33 @@ async fn push_message(api_url: &str, json_message: Value) {
             .send().await,
         Err(_e) => process::exit(3)
     };
-    let result_text = match response {
+    return match response {
         Ok(r) => r.text().await,
-        Err(_e) => process::exit(3)
-    };
-    println!("{:?}", result_text)
+        Err(e) => {Err(e)}
+    }
 }
 
 
 
-pub fn jsonify(username: &str, message: String) -> Result<Value> {
+pub fn jsonify(username: &str, message: &str) -> Result<Value> {
     let data = json!({
     "username": username,
     "content": message,
     });
-
-
-    println!("{}", data.to_string());
-
     Ok(data)
 }
+
+// #[cfg(test)]
+// mod tests {
+//     use crate::send_discord;
+//
+//     #[test]
+//     fn test_send_wh() {
+//         let rt = tokio::runtime::Runtime::new();
+//         rt.unwrap().block_on(send_discord(
+//             "",
+//             "hey",
+//             "Lazarus"
+//         )).unwrap();
+//     }
+// }
