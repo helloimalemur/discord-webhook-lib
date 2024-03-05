@@ -1,5 +1,5 @@
 [package]
-name = "rust-discord-lib"
+name = "discord-webhook-lib"
 description = "Discord Webhook library - VERY Simple lib for sending webhooks from your codebase, without fuss, no fluff"
 version = "0.1.3"
 edition = "2021"
