@@ -1,5 +1,5 @@
 use reqwest::header::CONTENT_TYPE;
-use reqwest::ClientBuilder;
+use reqwest::{ClientBuilder, Error};
 use serde_json::{json, Result, Value};
 use std::process;
 
@@ -7,7 +7,7 @@ pub async fn send_discord(
     webhook_url: &str,
     message: &str,
     username: &str,
-) -> std::result::Result<(), reqwest::Error> {
+) -> std::result::Result<(), Error> {
     if webhook_url.contains("https://discord.com/api/webhooks/") {
         let json_message = match jsonify(username, message) {
             Ok(j) => j,
