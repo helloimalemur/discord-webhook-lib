@@ -1,21 +1,22 @@
 use reqwest::header::CONTENT_TYPE;
-use reqwest::{ClientBuilder, Error};
+use reqwest::{ClientBuilder};
 use serde_json::{json, Result, Value};
 use std::process;
+use anyhow::{anyhow, Error};
 
 pub async fn send_discord(
     webhook_url: &str,
     message: &str,
     username: &str,
 ) -> std::result::Result<(), Error> {
-    if webhook_url.contains("https://discord.com/api/webhooks/") {
-        let json_message = match jsonify(username, message) {
-            Ok(j) => j,
-            Err(_e) => process::exit(3),
-        };
-        push_message(webhook_url, json_message).await?;
+    if webhook_url.contains("https://discord.com/api/webhooks/") || webhook_url.contains("https://discordapp.com/api/webhooks/") {
+        if let Ok(json_message) = jsonify(username, message) {
+            push_message(webhook_url, json_message).await?;
+        } else {
+            return Err(anyhow!("Unable to Send Discord Webhook"))
+        }
     } else {
-        println!("invalid discord url");
+        return Err(anyhow!("Invalid Discord URL"))
     }
     Ok(())
 }
@@ -50,17 +51,20 @@ pub fn jsonify(username: &str, message: &str) -> Result<Value> {
     Ok(data)
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use crate::send_discord;
-//
-//     #[test]
-//     fn test_send_wh() {
-//         let rt = tokio::runtime::Runtime::new();
-//         rt.unwrap().block_on(send_discord(
-//             "webhook_url",
-//             "Hello World",
-//             "Lazarus"
-//         )).unwrap();
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use std::env;
+    use crate::send_discord;
+    /// export DISC_WH="https://discordapp.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxx"
+    #[test]
+    fn test_send_wh() {
+        if let Ok(whu) = env::var("DISC_WH") {
+            let rt = tokio::runtime::Runtime::new();
+            rt.unwrap().block_on(send_discord(
+                whu.as_str(),
+                "Hello World",
+                "Lazarus"
+            )).unwrap();
+        }
+    }
+}
