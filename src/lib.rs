@@ -1,3 +1,5 @@
+mod message;
+
 use reqwest::header::CONTENT_TYPE;
 use reqwest::{ClientBuilder};
 use serde_json::{json, Result, Value};
