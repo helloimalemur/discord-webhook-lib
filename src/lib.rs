@@ -1,3 +1,4 @@
+use anyhow::Error;
 use reqwest::{multipart::{Form, Part}, Client};
 use std::fs;
 use std::path::Path;
@@ -54,12 +55,10 @@ impl DiscordMessage {
             .await?;
 
         if res.status().is_success() {
-            println!("Webhook sent successfully!");
+            Ok(())
         } else {
-            println!("Failed to send webhook. HTTP Status: {}", res.status());
+            Err(Box::from(Error::msg("unable to send")))
         }
-
-        Ok(())
     }
 }
 
@@ -99,8 +98,8 @@ impl DiscordMessageBuilder {
 
 #[cfg(test)]
 mod tests {
-    use std::env;
     use crate::DiscordMessage;
+    use std::env;
 
     #[test]
     fn send_test() {
