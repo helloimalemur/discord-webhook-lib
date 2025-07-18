@@ -1,7 +1,7 @@
 [package]
 name = "discord-webhook-lib"
 description = "Discord Webhook library - VERY Simple lib for sending webhooks from your codebase, without fuss, no fluff"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 authors = ["james@koonts.net"]
 license = "MIT"
