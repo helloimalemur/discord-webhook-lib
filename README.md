@@ -6,7 +6,7 @@ Discord Webhook library - VERY Simple lib for sending webhooks from your codebas
 ```rust
 let mut builder = DiscordMessage::builder(webhook_url.clone());
 builder.add_message(full_msg);
-let dmb= builder.build();
+let dmb = builder.build();
 
 if let Err(e) = dmb.send().await
 {
